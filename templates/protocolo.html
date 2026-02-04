@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card p-4 shadow-sm">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h4 class="mb-1">Protocolo</h4>
+      <div class="text-muted">
+        <strong>Paciente:</strong> {{ paciente.nome }} —
+        <strong>Idade:</strong> {{ idade }} anos
+      </div>
+      <div class="text-muted small">
+        <strong>DN:</strong> {{ paciente.dn }} • <strong>Tel:</strong> {{ paciente.telefone or "-" }}
+      </div>
+    </div>
+    <div>
+      <a class="btn btn-outline-secondary" href="{{ url_for('menu') }}">Voltar ao menu</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <form method="post">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="p-3 border rounded bg-light">
+          <h6 class="mb-2">1. Queixas</h6>
+          {% for q in QUEIXAS_LISTA %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="queixas_sel" value="{{ q }}"
+                   {% if q in queixas_sel %}checked{% endif %}>
+            <label class="form-check-label">{{ q }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="p-3 border rounded bg-light">
+          <h6 class="mb-2">1. Histórico</h6>
+          {% for h in HISTORICO_LISTA %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="historico_sel" value="{{ h }}"
+                   {% if h in historico_sel %}checked{% endif %}>
+            <label class="form-check-label">{{ h }}</label>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 p-3 border rounded bg-white">
+      <h6 class="mb-2">2. Gatilhos de rastreamento (Achados)</h6>
+
+      <div class="row">
+        {% for g in gatilhos %}
+        <div class="col-md-4">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="achados_sel" value="{{ g }}"
+                   {% if g in achados_sel %}checked{% endif %}>
+            <label class="form-check-label">{{ g }}</label>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% if idade < 2 or idade > 15 %}
+        <div class="alert alert-info mt-3 mb-0">
+          Protocolos pediátricos (miopia infantil) só se aplicam para idade entre <strong>2 e 15 anos</strong>.
+        </div>
+      {% endif %}
+    </div>
+
+    <button class="btn btn-primary btn-lg w-100 mt-4" type="submit">
+      Analisar decisão clínica
+    </button>
+  </form>
+
+  {% if exames_p and score %}
+  <hr class="my-4">
+
+  <div class="p-3 border-start border-4 border-primary rounded bg-light">
+    <h5 class="mb-2">Painel de conferência</h5>
+
+    <div class="mb-2">
+      <strong>Grau de risco:</strong> {{ score }}/10
+    </div>
+
+    <div class="mb-2">
+      <strong>Exames sugeridos:</strong>
+      {{ exames_p | join(', ') }}
+    </div>
+
+    {% if just %}
+    <div class="mb-3">
+      <strong>Justificativa:</strong> {{ just }}
+    </div>
+    {% endif %}
+
+    {% if links_bib %}
+    <div class="mb-3">
+      <strong>Literatura:</strong>
+      {% for item in links_bib %}
+        <a class="badge text-bg-primary text-decoration-none" target="_blank" href="{{ item.link }}">
+          {{ item.nome }}
+        </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if atendimento_id %}
+      <a class="btn btn-success w-100" target="_blank" href="{{ url_for('imprimir', atendimento_id=atendimento_id) }}">
+        Gerar guia (imprimir)
+      </a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

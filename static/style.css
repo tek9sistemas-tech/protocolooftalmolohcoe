@@ -1,0 +1,5 @@
+body { background: #f5f7fb; }
+.card { border-radius: 16px; }
+.badge-link { text-decoration: none; }
+.badge-link:hover { text-decoration: underline; }
+.readonly { background: #f1f3f5; }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Guia de Rastreamento</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: Arial, sans-serif; color:#222; }
+    .header { text-align:center; border-bottom:2px solid #0d6efd; padding-bottom:10px; margin-bottom:18px; }
+    .row { display:flex; justify-content:space-between; gap:12px; }
+    .box { border:1px solid #ddd; padding:10px; border-radius:8px; margin-bottom:10px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+    .item { font-size:13px; }
+    .legal { font-size:10px; color:#444; border-top:1px solid #ddd; margin-top:20px; padding-top:10px; line-height:1.3; }
+    .assinatura { margin-top:40px; text-align:center; border-top:1px solid #000; width:260px; margin-left:auto; margin-right:auto; padding-top:6px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2 style="margin:0; color:#0d6efd;">GUIA DE RASTREAMENTO PREVENTIVO</h2>
+    <div style="font-size:12px;">Documento interno — apoio à decisão clínica (não substitui avaliação médica)</div>
+  </div>
+
+  <div class="row">
+    <div class="box" style="flex:1;">
+      <strong>Paciente:</strong> {{ paciente.nome }}<br>
+      <strong>DN:</strong> {{ dn_fmt }}<br>
+      <strong>Telefone:</strong> {{ paciente.telefone or "-" }}
+    </div>
+    <div class="box" style="width:220px;">
+      <strong>Score:</strong> {{ atendimento.score }}/10<br>
+      <strong>Consultor:</strong> {{ atendimento.consultor }}<br>
+      <strong>Data:</strong> {{ atendimento.created_at.strftime("%d/%m/%Y %H:%M") }}
+    </div>
+  </div>
+
+  <div class="box">
+    <strong>Exames sugeridos:</strong>
+    <div class="grid" style="margin-top:8px;">
+      {% for e in exames_p %}
+        <div class="item">☑ {{ e }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="box">
+    <strong>Outros exames (critério médico):</strong>
+    <div class="grid" style="margin-top:8px;">
+      {% for e in exames_outros %}
+        <div class="item">☐ {{ e }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if atendimento.justificativa %}
+  <div class="box">
+    <strong>Justificativa técnica:</strong><br>
+    <div style="margin-top:6px;">{{ atendimento.justificativa }}</div>
+  </div>
+  {% endif %}
+
+  <div class="legal">
+    <strong>Referências:</strong> {{ biblio_txt | join(' | ') }}<br>
+    Este documento é de uso interno e destina-se ao apoio do protocolo. LGPD: acesso restrito.
+  </div>
+
+  <div class="assinatura">Assinatura e carimbo do médico</div>
+
+  <script>window.print();</script>
+</body>
+</html>

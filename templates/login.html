@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card p-4 shadow-sm">
+      <h4 class="mb-3 text-center">Login</h4>
+
+      {% with msgs = get_flashed_messages() %}
+        {% if msgs %}
+          <div class="alert alert-danger">{{ msgs[0] }}</div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="post">
+        <label class="form-label fw-bold">Usuário</label>
+        <input class="form-control mb-3" name="username" required>
+
+        <label class="form-label fw-bold">Senha</label>
+        <input class="form-control mb-3" type="password" name="password" required>
+
+        <button class="btn btn-primary w-100 btn-lg" type="submit">Entrar</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
